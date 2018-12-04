@@ -15,13 +15,13 @@ POS_tags = list("")
 dependency_tags = list("")
 lemmas = list("")
 for tok in doc:
-        tokens.append(tok.text)
-        POS_tags.append(tok.pos_)
-        dependency_tags.append(tok.dep_)
+    tokens.append(tok.text)
+    POS_tags.append(tok.pos_)
+    dependency_tags.append(tok.dep_)
 
 lemmatizer = Lemmatizer(LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES)
 for i in range(0,len(tokens)):
-        lemmas.append(lemmatizer(tokens[i],POS_tags[i] ))
+    lemmas.append(lemmatizer(tokens[i],POS_tags[i] ))
 
 
 
@@ -35,13 +35,13 @@ print("Dependency Parse Tree")
 print(dependency_tags)
 
 for tok in tokens:
-        syn = wn.synsets(tok)
-        if len(syn)!=0:
-                print(tok)
-                print("Hypernyms")
-                print(syn[0].hypernyms())
-                print("Hyponyms")
-                print(syn[0].hyponyms())
+    syn = wn.synsets(tok)
+    if len(syn)!=0:
+        print(tok)
+        print("Hypernyms")
+        print(syn[0].hypernyms())
+        print("Hyponyms")
+        print(syn[0].hyponyms())
 
 
 
