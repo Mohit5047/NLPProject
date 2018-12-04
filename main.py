@@ -1,4 +1,5 @@
 import nltk
+from nltk.corpus import wordnet as wn
 from nltk.stem import WordNetLemmatizer
 import spacy
 from spacy.lemmatizer import Lemmatizer
@@ -12,20 +13,38 @@ doc = nlp(text)
 tokens = list("")
 POS_tags = list("")
 dependency_tags = list("")
+lemmas = list("")
 for tok in doc:
         tokens.append(tok.text)
         POS_tags.append(tok.pos_)
         dependency_tags.append(tok.dep_)
 
-print(tokens)
-print(POS_tags)
-print(dependency_tags)
-lemmas = list("")
-
 lemmatizer = Lemmatizer(LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES)
 for i in range(0,len(tokens)):
         lemmas.append(lemmatizer(tokens[i],POS_tags[i] ))
+
+
+
+print("Tokenize")
+print(tokens)
+print("Lemmatize")
 print(lemmas)
+print("POS Tags")
+print(POS_tags)
+print("Dependency Parse Tree")
+print(dependency_tags)
+
+for tok in tokens:
+        syn = wn.synsets(tok)
+        if len(syn)!=0:
+                print(tok)
+                print("Hypernyms")
+                print(syn[0].hypernyms())
+                print("Hyponyms")
+                print(syn[0].hyponyms())
+
+
+
 
 #Extras
 # Find named entities, phrases and concepts
