@@ -36,16 +36,24 @@ print(dependency_tags)
 
 for tok in tokens:
     syn = wn.synsets(tok)
-    if len(syn)!=0:
-        print(tok)
-        print("Hypernyms")
-        print(syn[0].hypernyms())
-        print("Hyponyms")
-        print(syn[0].hyponyms())
-        print("Holonyms")
-        print(syn[0].part_holonyms())
-        print("Meronyms")
-        print(syn[0].part_meronyms())
+    hypernym = list("")
+    hyponym = list("")
+    holonym = list("")
+    meronym = list("")
+    for synset in syn:
+        hypernym.append(synset.hypernyms())
+        hyponym.append(synset.hyponyms())
+        holonym.append(synset.part_holonyms())
+        meronym.append(synset.part_meronyms())
+    print(tok)
+    print("Hypernyms")
+    print(hypernym)
+    print("Hyponyms")
+    print(hyponym)
+    print("Holonyms")
+    print(holonym)
+    print("Meronyms")
+    print(meronym)
 
 
 
