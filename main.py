@@ -42,6 +42,10 @@ for tok in tokens:
         print(syn[0].hypernyms())
         print("Hyponyms")
         print(syn[0].hyponyms())
+        print("Holonyms")
+        print(syn[0].part_holonyms())
+        print("Meronyms")
+        print(syn[0].part_meronyms())
 
 
 
