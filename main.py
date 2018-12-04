@@ -1,31 +1,39 @@
 import nltk
 from nltk.stem import WordNetLemmatizer
 import spacy
-from spacy.lang.en import English
-
+from spacy.lemmatizer import Lemmatizer
+from spacy.lang.en import LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES
 
 nlp = spacy.load('en_core_web_sm')
-text = (u"When Sebastian Thrun started working on self-driving cars at "
-        u"Google in 2007, few people outside of the company took him "
-        u"seriously. “I can tell you very senior CEOs of major American "
-        u"car companies would shake my hand and turn away because I wasn’t "
-        u"worth talking to,” said Thrun, now the co-founder and CEO of "
-        u"online higher education startup Udacity, in an interview with "
-        u"Recode earlier this week.")
+print("Enter test String")
+text = input()
 doc = nlp(text)
 
+tokens = list("")
+POS_tags = list("")
+dependency_tags = list("")
+for tok in doc:
+        tokens.append(tok.text)
+        POS_tags.append(tok.pos_)
+        dependency_tags.append(tok.dep_)
+
+print(tokens)
+print(POS_tags)
+print(dependency_tags)
+lemmas = list("")
+
+lemmatizer = Lemmatizer(LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES)
+for i in range(0,len(tokens)):
+        lemmas.append(lemmatizer(tokens[i],POS_tags[i] ))
+print(lemmas)
+
+#Extras
 # Find named entities, phrases and concepts
-for entity in doc.ents:
-    print(entity.text, entity.label_)
+# for entity in doc.ents:
+#     print(entity.text, entity.label_)
 
 # Determine semantic similarities
-doc1 = nlp(u"my fries were super gross")
-doc2 = nlp(u"such disgusting fries")
-similarity = doc1.similarity(doc2)
-print(doc1.text, doc2.text, similarity)
-
-#Tokenizer
-tokenizer = English().Defaults.create_tokenizer(nlp)
-tokens = tokenizer(u'This is a sentence')
-assert len(tokens) == 4
-print(tokens[0])
+# doc1 = nlp("my fries were super gross")
+# doc2 = nlp("such disgusting fries")
+# similarity = doc1.similarity(doc2)
+# print(doc1.text, doc2.text, similarity)
