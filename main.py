@@ -5,7 +5,7 @@ import spacy
 from spacy.lemmatizer import Lemmatizer
 from spacy.lang.en import LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES
 
-nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load('en_core_web_lg')
 print("Enter test String")
 text = input()
 doc = nlp(text)
@@ -65,6 +65,6 @@ for tok in tokens:
 
 # Determine semantic similarities
 doc1 = nlp("kill")
-doc2 = nlp("killing")
+doc2 = nlp("murdered")
 similarity = doc1.similarity(doc2)
 print(doc1.text, doc2.text, similarity)

@@ -5,7 +5,7 @@ import spacy
 from spacy.lemmatizer import Lemmatizer
 from spacy.lang.en import LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES
 
-nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load('en_core_web_lg')
 file_path = "/Users/mohit/Desktop/a.txt"
 file = open(file_path, 'r')
 text = file.read()
@@ -20,6 +20,14 @@ for data in text2:
     doc = nlp(data)
     for tok in doc:
         if tok.pos_ == "VERB":
-            all_word_set.add(tok)
+            if tok not in all_word_set:
+                all_word_set.add(tok)
 
-print(all_word_set)
+kidnap_template = nlp("kill")
+kidnap_set = set("")
+for word in all_word_set:
+    score = kidnap_template.similarity(word)
+    if score > 0.7:
+        if word not in kidnap_set:
+            kidnap_set.add(word)
+print(kidnap_set)
