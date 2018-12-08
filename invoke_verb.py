@@ -27,7 +27,7 @@ kidnap_template = nlp("kill")
 kidnap_set = set("")
 for word in all_word_set:
     score = kidnap_template.similarity(word)
-    if score > 0.7:
+    if score > 0.5:
         if word not in kidnap_set:
-            kidnap_set.add(word)
+            kidnap_set.add(word.text)
 print(kidnap_set)
