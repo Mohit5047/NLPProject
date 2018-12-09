@@ -250,10 +250,20 @@ def fill_template2(entity_tags1, depend_tag, word_child_left, word_child_left_co
         print("To: ", to_string)
 
 
-def fill_template3(document,word_set):
+def fill_template3(document):
+    doc_sim = nlp("vehicle")
+    word_set = list()
     for tok in document:
-        if tok.text in word_set:
-            print("Vehicle: ",tok)
+        word_set.append(tok.text)
+    max1 = 0
+    index = -1
+    for i in range(0,len(word_set)):
+        score = doc_sim.similarity(nlp(word_set[i]))
+        if max1 < score:
+            index1 = i
+            max1 = score
+    print("Vehicle: ",word_set[i])
+
 
     for entity1 in  document.ents:
         if entity1.label_ == "LOCATION" or entity1.label_ == "GPE":
