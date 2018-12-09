@@ -8,28 +8,32 @@ from spacy.lang.en import LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES
 nlp = spacy.load('en_core_web_lg')
 
 
-
 def task_three():
     tokens = list("")
-    POS_tags = list("")
-    dependency_tags = list("")
+    grammar_tags = dict()
+    dependency_tags = dict()
     lemmas = list("")
     for tok in doc:
         tokens.append(tok.text)
-        POS_tags.append(tok.tag_)
-        dependency_tags.append(tok.dep_)
-        print(tok,tok.dep_)
+        grammar_tags[tok] = tok.tag_
+        if tok.dep_ in dependency_tags.keys():
+            value_set = dependency_tags[tok.dep_]
+            value_set.add(tok)
+        else:
+            value_set = set()
+            value_set.add(tok)
+            dependency_tags[tok.dep_] = value_set
 
     lemmatizer = Lemmatizer(LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES)
     for i in range(0,len(tokens)):
-        lemmas.append(lemmatizer(tokens[i],POS_tags[i]))
+        lemmas.append(lemmatizer(tokens[i],grammar_tags[i]))
 
     print("Tokenize")
     print(tokens)
     print("Lemmatize")
     print(lemmas)
     print("POS Tags")
-    print(POS_tags)
+    print(grammar_tags)
     print("Dependency Parse Tree")
     print(dependency_tags)
 
@@ -78,6 +82,7 @@ def get_similar(verb_template,all_word_set):
     print(verb_set)
     return verb_set
 
+
 file_path = "/Users/mohit/Desktop/a.txt"
 file = open(file_path, 'r',encoding="utf-8")
 text = file.read()
@@ -100,15 +105,6 @@ doc2 = nlp("Jack killed the man in the bar on Thursday at 7 PM near the beach")
 #NER tagging
 for entity in doc2.ents:
     print(entity.text, entity.label_)
-
-dependency_tags = dict()
-entity_tags = dict()
-for token in doc:
-    dependency_tags[token.dep_] = token
-
-for entity in doc.ents:
-    entity_tags[entity.label_] = entity
-
 
 
 
