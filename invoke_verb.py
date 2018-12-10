@@ -36,6 +36,7 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
         subject_string = ""
         if word_child_left_count[list(root1_word)[0]] != 0:
             for token in root1_left_child:
+                print("YES")
                 if token.dep_ == "nsubj":
                     token_right_child = word_child_right[token.text]
                     token_right_count = word_child_right_count[token.text]
@@ -43,7 +44,7 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                     subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
                     subject_string = get_compound(token.lefts, "") + " " + subject_string
 
-        print("Bomber/Perpetrator: ",subject_string)
+        print("Killer: ",subject_string)
         object_string = list()
         if word_child_right_count[list(root1_word)[0]] != 0 :
             for token in root1_right_child:
@@ -68,7 +69,7 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
             if max<score:
                 max = score
                 index = i
-        print("Target: ",object_string[index])
+        print("Victim: ",object_string[index])
         if "DATE" in entity_tags1.keys():
             print("Date: ", entity_tags1["DATE"])
         elif "TIME" in entity_tags1.keys():
@@ -88,9 +89,9 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                     subject_string += token.text
                     subject_string += get_string(token_right_child, token_right_count, "", word_child_right,
                                                  word_child_right_count,word_child_left,word_child_left_count)
-                    subject_string = get_compound(token.lefts,"") + " " + subject_string
+                    subject_string = get_compound(token.lefts, "") + " " + subject_string
 
-        print("Target: ", subject_string)
+        print("Victim: ", subject_string)
         object_string = list()
         if word_child_right_count[list(root1_word)[0]] != 0:
             for token in root1_right_child:
@@ -99,7 +100,7 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                 string = token.text
                 string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
                                            word_child_right_count,word_child_left,word_child_left_count)
-                string = get_compound(token.lefts,"")  + " " + string
+                string = get_compound(token.lefts, "") + " " + string
                 object_string.append(string)
 
         print(object_string)
@@ -110,7 +111,7 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                 break
             else:
                 final_string = "NULL"
-        print("Bomber/Perpetrator: ",final_string )
+        print("Killer: ",final_string )
         if "DATE" in entity_tags1.keys():
             print("Date: ", entity_tags1["DATE"])
         elif "TIME" in entity_tags1.keys():
@@ -216,10 +217,14 @@ def arrest(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
         subject_string = ""
         if word_child_left_count[list(root1_word)[0]] != 0:
             for token in root1_left_child:
+                print("YES")
+                print(token.text)
                 if token.dep_ == "nsubj":
+                    print(token.text)
                     token_right_child = word_child_right[token.text]
                     token_right_count = word_child_right_count[token.text]
-                    subject_string += token.text
+                    subject_string = token.text
+                    print(subject_string)
                     subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
                     subject_string = get_compound(token.lefts, "") + " " + subject_string
 
@@ -248,7 +253,10 @@ def arrest(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
             if max1<score:
                 max1 = score
                 index = i
-        print("Criminal: ",object_string[index])
+        if index!=-1:
+            print("Criminal: ",object_string[index])
+        else:
+            print("Criminal: NULL")
         if "DATE" in entity_tags1.keys():
             print("Date: ", entity_tags1["DATE"])
         elif "TIME" in entity_tags1.keys():
@@ -900,7 +908,6 @@ def recognize_person(document):
         print("Person: ",entity_labels["PERSON"])
     if "ORG" in  entity_labels.keys():
         print("Orgranization: ",entity_labels["ORG"])
-
 
 
 
