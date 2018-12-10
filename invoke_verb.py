@@ -8,28 +8,6 @@ from spacy.lang.en import LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES
 nlp = spacy.load('en_core_web_lg')
 
 
-def get_verbs(corpus):
-    all_word_set = set("")
-    for data in corpus:
-        doc = nlp(data)
-        for tok in doc:
-            if tok.tag_ == "VB" or tok.tag_== "VBD" or tok.tag_ == "VBG" or tok.tag_ == "VBN" or tok.tag_ == "VBP" or tok.tag_ == "VBZ":
-                if tok not in all_word_set:
-                    all_word_set.add(tok)
-    return all_word_set
-
-
-def get_similar(verb_template,all_word_set):
-    verb_set = set("")
-    for word in all_word_set:
-        score = verb_template.similarity(word)
-        if score > 0.4:
-            if word not in verb_set:
-                verb_set.add(word.text)
-    print(verb_set)
-    return verb_set
-
-
 def get_string(token_child_set,number_of_children,string,word_children1_right,word_children1_right_count,word_children1_left,word_children1_left_count):
     while number_of_children>0:
         for child_token in token_child_set:
@@ -53,7 +31,7 @@ def get_compound(token_left_child,string):
     return string
 
 
-def fill_template1(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
     if "nsubjpass" not in depend_tag.keys():
         subject_string = ""
         if word_child_left_count[list(root1_word)[0]] != 0:
@@ -65,7 +43,7 @@ def fill_template1(entity_tags1, depend_tag, word_child_left, word_child_left_co
                     subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
                     subject_string = get_compound(token.lefts, "") + " " + subject_string
 
-        print("Killer: ",subject_string)
+        print("Bomber/Perpetrator: ",subject_string)
         object_string = list()
         if word_child_right_count[list(root1_word)[0]] != 0 :
             for token in root1_right_child:
@@ -90,7 +68,7 @@ def fill_template1(entity_tags1, depend_tag, word_child_left, word_child_left_co
             if max<score:
                 max = score
                 index = i
-        print("Victim: ",object_string[index])
+        print("Target: ",object_string[index])
         if "DATE" in entity_tags1.keys():
             print("Date: ", entity_tags1["DATE"])
         elif "TIME" in entity_tags1.keys():
@@ -112,7 +90,7 @@ def fill_template1(entity_tags1, depend_tag, word_child_left, word_child_left_co
                                                  word_child_right_count,word_child_left,word_child_left_count)
                     subject_string = get_compound(token.lefts,"") + " " + subject_string
 
-        print("Victim: ", subject_string)
+        print("Target: ", subject_string)
         object_string = list()
         if word_child_right_count[list(root1_word)[0]] != 0:
             for token in root1_right_child:
@@ -132,7 +110,7 @@ def fill_template1(entity_tags1, depend_tag, word_child_left, word_child_left_co
                 break
             else:
                 final_string = "NULL"
-        print("Killer: ",final_string )
+        print("Bomber/Perpetrator: ",final_string )
         if "DATE" in entity_tags1.keys():
             print("Date: ", entity_tags1["DATE"])
         elif "TIME" in entity_tags1.keys():
@@ -143,7 +121,187 @@ def fill_template1(entity_tags1, depend_tag, word_child_left, word_child_left_co
             print("Location: ", entity_tags1["LOC"])
 
 
-def fill_template2(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+def shoot(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+    if "nsubjpass" not in depend_tag.keys():
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubj":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts, "") + " " + subject_string
+
+        print("Shooter/Perpetrator: ",subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0 :
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                if "obj" not in token.dep_:
+                    string += " "+get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+                else:
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+
+        print(object_string)
+        doc1 = nlp("victim")
+        index = -1
+        max = 0
+        for i in range(0,len(object_string)):
+            score = doc1.similarity(nlp(object_string[i]))
+            print(score)
+            if max<score:
+                max = score
+                index = i
+        print("Target/Victim: ",object_string[index])
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+    else:
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubjpass":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child, token_right_count, "", word_child_right,
+                                                 word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts,"") + " " + subject_string
+
+        print("Target/Victim: ", subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0:
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
+                                           word_child_right_count,word_child_left,word_child_left_count)
+                string = get_compound(token.lefts,"")  + " " + string
+                object_string.append(string)
+
+        print(object_string)
+        final_string = ""
+        for s in object_string:
+            if "by" in s:
+                final_string = s
+                break
+            else:
+                final_string = "NULL"
+        print("Shooter/Perpetrator: ",final_string )
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+
+def arrest(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+    if "nsubjpass" not in depend_tag.keys():
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubj":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts, "") + " " + subject_string
+
+        print("Arrester: ",subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0 :
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                if "obj" not in token.dep_:
+                    string += " "+get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+                else:
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+
+        print(object_string)
+        doc1 = nlp("victim")
+        index = -1
+        max1 = 0
+        for i in range(0,len(object_string)):
+            score = doc1.similarity(nlp(object_string[i]))
+            print(score)
+            if max1<score:
+                max1 = score
+                index = i
+        print("Criminal: ",object_string[index])
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+    else:
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubjpass":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child, token_right_count, "", word_child_right,
+                                                 word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts,"") + " " + subject_string
+
+        print("Criminal: ", subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0:
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
+                                           word_child_right_count,word_child_left,word_child_left_count)
+                string = get_compound(token.lefts,"")  + " " + string
+                object_string.append(string)
+
+        print(object_string)
+        final_string = ""
+        for s in object_string:
+            if "by" in s:
+                final_string = s
+                break
+            else:
+                final_string = "NULL"
+        print("Arrester: ",final_string )
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+
+def smuggle(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
     if "nsubjpass" not in depend_tag.keys():
         subject_string = ""
         if word_child_left_count[list(root1_word)[0]] != 0:
@@ -167,7 +325,6 @@ def fill_template2(entity_tags1, depend_tag, word_child_left, word_child_left_co
                 string = get_compound(tok.lefts, "") + " " + string
                 object_string.append(string)
 
-
         print(object_string)
         from_string = "NULL"
         to_string = "NULL"
@@ -185,7 +342,6 @@ def fill_template2(entity_tags1, depend_tag, word_child_left, word_child_left_co
         print("From: ",from_string)
         print("To: ",to_string)
 
-
         index1 = -1
         max1 = 0
         doc11 = nlp("item")
@@ -195,10 +351,10 @@ def fill_template2(entity_tags1, depend_tag, word_child_left, word_child_left_co
                 index1 = i
         print("Item: ", object_string[index1])
 
-        if "CARDINAL" in entity_tags.keys():
-            print("Quantity: ",entity_tags["CARDINAL"])
-        elif "QUANTITY"  in  entity_tags.keys():
-            print("Quantity: ",entity_tags["QUANTITY"])
+        if "CARDINAL" in entity_tags1.keys():
+            print("Quantity: ",entity_tags1["CARDINAL"])
+        elif "QUANTITY"  in  entity_tags1.keys():
+            print("Quantity: ",entity_tags1["QUANTITY"])
 
     else:
         subject_string = ""
@@ -248,21 +404,488 @@ def fill_template2(entity_tags1, depend_tag, word_child_left, word_child_left_co
 
         print("From: ", from_string)
         print("To: ", to_string)
+        index1 = -1
+        max1 = 0
+        doc11 = nlp("item")
+        for i in range(0, len(object_string)):
+            if max1 < doc11.similarity(nlp(object_string[i])):
+                max1 = doc11.similarity(nlp(object_string[i]))
+                index1 = i
+        print("Item: ", object_string[index1])
+
+        if "CARDINAL" in entity_tags1.keys():
+            print("Quantity: ", entity_tags1["CARDINAL"])
+        elif "QUANTITY" in entity_tags1.keys():
+            print("Quantity: ", entity_tags1["QUANTITY"])
 
 
-def fill_template3(document):
+def seizure(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+    if "nsubjpass" not in depend_tag.keys():
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for tok in root1_left_child:
+                if tok.dep_ == "nsubj":
+                    token_right_child = word_child_right[tok.text]
+                    token_right_count = word_child_right_count[tok.text]
+                    subject_string += tok.text
+                    subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(tok.lefts, "") + " " + subject_string
+
+        print("Authority: ",subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0:
+            for tok in root1_right_child:
+                token_right_child = word_child_right[tok.text]
+                token_right_count = word_child_right_count[tok.text]
+                string = tok.text
+                string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
+                                           word_child_right_count, word_child_left, word_child_left_count)
+                string = get_compound(tok.lefts, "") + " " + string
+                object_string.append(string)
+
+        index1 = -1
+        max1 = 0
+        doc11 = nlp("item")
+        for i in range(0, len(object_string)):
+            if max1 < doc11.similarity(nlp(object_string[i])):
+                max1 = doc11.similarity(nlp(object_string[i]))
+                index1 = i
+        print("Item: ", object_string[index1])
+
+        if "CARDINAL" in entity_tags1.keys():
+            print("Quantity: ",entity_tags1["CARDINAL"])
+        elif "QUANTITY"  in  entity_tags1.keys():
+            print("Quantity: ",entity_tags1["QUANTITY"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+    else:
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for tok in root1_left_child:
+                if tok.dep_ == "nsubjpass":
+                    token_right_child = word_child_right[tok.text]
+                    token_right_count = word_child_right_count[tok.text]
+                    subject_string += tok.text
+                    subject_string += get_string(token_right_child, token_right_count, "", word_child_right,
+                                                 word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(tok.lefts, "") + " " + subject_string
+
+        print("Item : ", subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0:
+            for tok in root1_right_child:
+                token_right_child = word_child_right[tok.text]
+                token_right_count = word_child_right_count[tok.text]
+                string = tok.text
+                string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
+                                           word_child_right_count,word_child_left,word_child_left_count)
+                string = get_compound(tok.lefts, "") + " " + string
+                object_string.append(string)
+
+        index1 = -1
+        max1 = 0
+        doc11 = nlp("authority")
+        for i in range(0, len(object_string)):
+            if max1 < doc11.similarity(nlp(object_string[i])):
+                max1 = doc11.similarity(nlp(object_string[i]))
+                index1 = i
+        print("Authority: ", object_string[index1])
+
+        if "CARDINAL" in entity_tags1.keys():
+            print("Quantity: ", entity_tags1["CARDINAL"])
+        elif "QUANTITY" in entity_tags1.keys():
+            print("Quantity: ", entity_tags1["QUANTITY"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+
+def kidnap(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+    if "nsubjpass" not in depend_tag.keys():
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubj":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts, "") + " " + subject_string
+
+        print("Kidnapper/Perpetrator: ",subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0 :
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                if "obj" not in token.dep_:
+                    string += " "+get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+                else:
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+
+        print(object_string)
+        doc1 = nlp("victim")
+        index = -1
+        max = 0
+        for i in range(0,len(object_string)):
+            score = doc1.similarity(nlp(object_string[i]))
+            print(score)
+            if max<score:
+                max = score
+                index = i
+        print("Target/Victim: ",object_string[index])
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+
+    else:
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubjpass":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child, token_right_count, "", word_child_right,
+                                                 word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts,"") + " " + subject_string
+
+        print("Target/Victim: ", subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0:
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
+                                           word_child_right_count,word_child_left,word_child_left_count)
+                string = get_compound(token.lefts,"")  + " " + string
+                object_string.append(string)
+
+        print(object_string)
+        final_string = ""
+        for s in object_string:
+            if "by" in s:
+                final_string = s
+                break
+            else:
+                final_string = "NULL"
+        print("Kidnapper/Perpetrator: ",final_string )
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+
+
+def robbery(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+    if "nsubjpass" not in depend_tag.keys():
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubj":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts, "") + " " + subject_string
+
+        print("Robber/Perpetrator: ",subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0 :
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                if "obj" not in token.dep_:
+                    string += " "+get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+                else:
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+
+        doc1 = nlp("target")
+        index = -1
+        max1 = 0
+        for i in range(0,len(object_string)):
+            score = doc1.similarity(nlp(object_string[i]))
+            print(score)
+            if max1<score:
+                max1 = score
+                index = i
+        print("Victim: ",object_string[index])
+        object_string.remove(object_string[index])
+        doc2 = nlp("item")
+        index1 = -1
+        max2 = 0
+        for i in range(0, len(object_string)):
+            score = doc2.similarity(nlp(object_string[i]))
+            print(score)
+            if max2 < score:
+                max2 = score
+                index1 = i
+        if index1 != -1:
+            print("Item: ", object_string[index1])
+            object_string.remove(object_string[index1])
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+
+
+    else:
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubjpass":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child, token_right_count, "", word_child_right,
+                                                 word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts,"") + " " + subject_string
+
+        print("Target: ", subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0:
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
+                                           word_child_right_count,word_child_left,word_child_left_count)
+                string = get_compound(token.lefts,"")  + " " + string
+                object_string.append(string)
+
+        final_string = ""
+        for s in object_string:
+            if "by" in s:
+                final_string = s
+                break
+            else:
+                final_string = "NULL"
+        print("Robber/Perpetrator: ",final_string )
+        object_string.remove(final_string)
+        doc2 = nlp("item")
+        index1 = -1
+        max2 = 0
+        for i in range(0, len(object_string)):
+            score = doc2.similarity(nlp(object_string[i]))
+            print(score)
+            if max2 < score:
+                max2 = score
+                index1 = i
+        if index1 != -1:
+            print("Item: ", object_string[index1])
+            object_string.remove(object_string[index1])
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+
+
+def kill(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+    if "nsubjpass" not in depend_tag.keys():
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for tok in root1_left_child:
+                if tok.dep_ == "nsubj":
+                    token_right_child = word_child_right[tok.text]
+                    token_right_count = word_child_right_count[tok.text]
+                    subject_string += tok.text
+                    subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(tok.lefts, "") + " " + subject_string
+
+        print("Killer/Perpetrator: ",subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0 :
+            for tok in root1_right_child:
+                token_right_child = word_child_right[tok.text]
+                token_right_count = word_child_right_count[tok.text]
+                string = tok.text
+                if "obj" not in tok.dep_:
+                    string += " "+get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    string = get_compound(tok.lefts, "") + " " + string
+                    object_string.append(string)
+                else:
+                    string = get_compound(tok.lefts, "") + " " + string
+                    object_string.append(string)
+
+        print(object_string)
+        doc1 = nlp("victim")
+        index = -1
+        max = 0
+        for i in range(0,len(object_string)):
+            score = doc1.similarity(nlp(object_string[i]))
+            print(score)
+            if max<score:
+                max = score
+                index = i
+        print("Target/Victim: ",object_string[index])
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+    else:
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for tok in root1_left_child:
+                if tok.dep_ == "nsubjpass":
+                    token_right_child = word_child_right[tok.text]
+                    token_right_count = word_child_right_count[tok.text]
+                    subject_string += tok.text
+                    subject_string += get_string(token_right_child, token_right_count, "", word_child_right,
+                                                 word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(tok.lefts, "") + " " + subject_string
+
+        print("Target/Victim: ", subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0:
+            for tok in root1_right_child:
+                token_right_child = word_child_right[tok.text]
+                token_right_count = word_child_right_count[tok.text]
+                string = tok.text
+                string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
+                                           word_child_right_count,word_child_left,word_child_left_count)
+                string = get_compound(tok.lefts, "") + " " + string
+                object_string.append(string)
+
+        print(object_string)
+        final_string = ""
+        for s in object_string:
+            if "by" in s:
+                final_string = s
+                break
+            else:
+                final_string = "NULL"
+        print("Killer/Perpetrator: ",final_string )
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+
+def hijack(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_child_right, word_child_right_count, root1_word, root1_left_child, root1_right_child):
+    if "nsubjpass" not in depend_tag.keys():
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubj":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts, "") + " " + subject_string
+
+        print("Hijacker/Perpetrator: ",subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0 :
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                if "obj" not in token.dep_:
+                    string += " "+get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+                else:
+                    string = get_compound(token.lefts, "") + " " + string
+                    object_string.append(string)
+
+        print(object_string)
+        doc1 = nlp("target")
+        index = -1
+        max1 = 0
+        for i in range(0,len(object_string)):
+            score = doc1.similarity(nlp(object_string[i]))
+            print(score)
+            if max1<score:
+                max1 = score
+                index = i
+        print("Target: ",object_string[index])
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+    else:
+        subject_string = ""
+        if word_child_left_count[list(root1_word)[0]] != 0:
+            for token in root1_left_child:
+                if token.dep_ == "nsubjpass":
+                    token_right_child = word_child_right[token.text]
+                    token_right_count = word_child_right_count[token.text]
+                    subject_string += token.text
+                    subject_string += get_string(token_right_child, token_right_count, "", word_child_right,
+                                                 word_child_right_count,word_child_left,word_child_left_count)
+                    subject_string = get_compound(token.lefts,"") + " " + subject_string
+
+        print("Target: ", subject_string)
+        object_string = list()
+        if word_child_right_count[list(root1_word)[0]] != 0:
+            for token in root1_right_child:
+                token_right_child = word_child_right[token.text]
+                token_right_count = word_child_right_count[token.text]
+                string = token.text
+                string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
+                                           word_child_right_count,word_child_left,word_child_left_count)
+                string = get_compound(token.lefts,"")  + " " + string
+                object_string.append(string)
+
+        print(object_string)
+        final_string = ""
+        for s in object_string:
+            if "by" in s:
+                final_string = s
+                break
+            else:
+                final_string = "NULL"
+        print("Hijacker/Perpetrator: ",final_string )
+        if "DATE" in entity_tags1.keys():
+            print("Date: ", entity_tags1["DATE"])
+        elif "TIME" in entity_tags1.keys():
+            print("Time: ", entity_tags1["TIME"])
+        if "GPE" in entity_tags1.keys():
+            print("Location: ", entity_tags1["GPE"])
+        elif "LOC" in entity_tags1.keys():
+            print("Location: ", entity_tags1["LOC"])
+
+
+def crash(document):
     doc_sim = nlp("vehicle")
     word_set = list()
     for tok in document:
         word_set.append(tok.text)
     max1 = 0
-    index = -1
+    index1 = -1
     for i in range(0,len(word_set)):
         score = doc_sim.similarity(nlp(word_set[i]))
         if max1 < score:
             index1 = i
             max1 = score
-    print("Vehicle: ",word_set[i])
+    print("Vehicle: ",word_set[index1])
 
 
     for entity1 in  document.ents:
@@ -313,8 +936,6 @@ for entity in doc.ents:
 root_word = dependency_tags["ROOT"]
 root_left_child = word_children_left[list(root_word)[0]]
 root_right_child = word_children_right[list(root_word)[0]]
-
-fill_template2(entity_tags,dependency_tags,word_children_left,word_children_left_count,word_children_right,word_children_right_count,root_word,root_left_child,root_right_child)
 
 
 

@@ -58,7 +58,7 @@ def task_three():
         print("Meronyms")
         print(meronym)
 
-    return POS_tags,tokens,dependency_tags,lemmas
+    return grammar_tags,tokens,dependency_tags,lemmas
 
 
 def get_verbs(corpus):
