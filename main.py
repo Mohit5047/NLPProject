@@ -232,4 +232,5 @@ for verb in input_verb:
         print("Crash")
         invoke_verb.crash(doc_input)
 
+print("Person Recognition")
 invoke_verb.recognize_person(doc_input)
