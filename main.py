@@ -4,6 +4,7 @@ from nltk.stem import WordNetLemmatizer
 import spacy
 from spacy.lemmatizer import Lemmatizer
 from spacy.lang.en import LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES
+import invoke_verb
 
 nlp = spacy.load('en_core_web_lg')
 
@@ -25,8 +26,8 @@ def task_three():
             dependency_tags[tok.dep_] = value_set
 
     lemmatizer = Lemmatizer(LEMMA_INDEX, LEMMA_EXC, LEMMA_RULES)
-    for i in range(0,len(tokens)):
-        lemmas.append(lemmatizer(tokens[i],grammar_tags[i]))
+    for i in range(0, len(tokens)):
+        lemmas.append(lemmatizer(tokens[i], grammar_tags[i]))
 
     print("Tokenize")
     print(tokens)
@@ -58,7 +59,7 @@ def task_three():
         print("Meronyms")
         print(meronym)
 
-    return grammar_tags,tokens,dependency_tags,lemmas
+    return grammar_tags, tokens, dependency_tags, lemmas
 
 
 def get_verbs(corpus):
@@ -66,13 +67,13 @@ def get_verbs(corpus):
     for data in corpus:
         doc = nlp(data)
         for tok in doc:
-            if tok.tag_ == "VB" or tok.tag_== "VBD" or tok.tag_ == "VBG" or tok.tag_ == "VBN" or tok.tag_ == "VBP" or tok.tag_ == "VBZ":
+            if tok.tag_ == "VB" or tok.tag_ == "VBD" or tok.tag_ == "VBG" or tok.tag_ == "VBN" or tok.tag_ == "VBP" or tok.tag_ == "VBZ":
                 if tok not in all_word_set:
                     all_word_set.add(tok)
     return all_word_set
 
 
-def get_similar(verb_template,all_word_set):
+def get_similar(verb_template, all_word_set):
     verb_set = set("")
     for word in all_word_set:
         score = verb_template.similarity(word)
@@ -84,27 +85,29 @@ def get_similar(verb_template,all_word_set):
 
 
 file_path = "/Users/mohit/Desktop/a.txt"
-file = open(file_path, 'r',encoding="utf-8")
+file = open(file_path, 'r', encoding="utf-8")
 text = file.read()
 text1 = text.split(".")
 text2 = list("")
 for t in text1:
-    t = t.replace("\n"," ")
+    t = t.replace("\n", " ")
     text2.append(t)
 
 all_verb_set = get_verbs(text2)
-bombing_set = get_similar(nlp("bomb"),all_verb_set)
-shoot_set = get_similar(nlp("shoot"),all_verb_set)
-arrest_set = get_similar(nlp("arrest"),all_verb_set)
-smuggle_set = get_similar(nlp("smuggle"),all_verb_set)
-seizure_set = get_similar(nlp("seize"),all_verb_set)
-kidnap_set = get_similar(nlp("kidnap"),all_verb_set)
-robbery_set = get_similar(nlp("robbery",all_verb_set))
-kill_set = get_similar(nlp("kill"),all_verb_set)
-hijack_set = get_similar(nlp("hijack"),all_verb_set)
-crash_set = get_similar(nlp("crash"),all_verb_set)
+bombing_set = get_similar(nlp("bomb"), all_verb_set)
+shoot_set = get_similar(nlp("shoot"), all_verb_set)
+arrest_set = get_similar(nlp("arrest"), all_verb_set)
+smuggle_set = get_similar(nlp("smuggle"), all_verb_set)
+seizure_set = get_similar(nlp("seize"), all_verb_set)
+kidnap_set = get_similar(nlp("kidnap"), all_verb_set)
+robbery_set = get_similar(nlp("robbery", all_verb_set))
+kill_set = get_similar(nlp("kill"), all_verb_set)
+hijack_set = get_similar(nlp("hijack"), all_verb_set)
+crash_set = get_similar(nlp("crash"), all_verb_set)
+
 print("Enter test Sentence")
-doc = nlp(input())
+input_text = input()
+doc = nlp(text)
 dependency_tags = dict()
 entity_tags = dict()
 word_children_left = dict()
@@ -133,12 +136,44 @@ root_word = dependency_tags["ROOT"]
 root_left_child = word_children_left[list(root_word)[0]]
 root_right_child = word_children_right[list(root_word)[0]]
 
-
-
-
-
-
-
-
-
-
+input_verb = get_verbs(list(input_text))
+for verb in input_verb:
+    if verb in bombing_set:
+        invoke_verb.bombing(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                            word_children_right,
+                            word_children_right_count, root_word, root_left_child, root_right_child)
+    if verb in shoot_set:
+        invoke_verb.shoot(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                          word_children_right, word_children_right_count, root_word, root_left_child,
+                          root_right_child)
+    if verb in arrest_set:
+        invoke_verb.arrest(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                           word_children_right, word_children_right_count, root_word, root_left_child,
+                           root_right_child)
+    if verb in smuggle_set:
+        invoke_verb.smuggle(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                            word_children_right, word_children_right_count, root_word, root_left_child,
+                            root_right_child)
+    if verb in seizure_set:
+        invoke_verb.seizure(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                            word_children_right, word_children_right_count, root_word, root_left_child,
+                            root_right_child)
+    if verb in kidnap_set:
+        invoke_verb.kidnap(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                           word_children_right, word_children_right_count, root_word, root_left_child,
+                           root_right_child)
+    if verb in robbery_set:
+        invoke_verb.bombing(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                            word_children_right, word_children_right_count, root_word, root_left_child,
+                            root_right_child)
+    if verb in kill_set:
+        invoke_verb.kill(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                         word_children_right, word_children_right_count, root_word, root_left_child,
+                         root_right_child)
+    if verb in hijack_set:
+        invoke_verb.hijack(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                           word_children_right, word_children_right_count, root_word, root_left_child,
+                           root_right_child)
+    if verb in crash_set:
+        invoke_verb.crash(doc)
+invoke_verb.recognize_person(doc)
