@@ -887,10 +887,9 @@ def crash(document):
             max1 = score
     print("Vehicle: ",word_set[index1])
 
-
-    for entity1 in  document.ents:
+    for entity1 in document.ents:
         if entity1.label_ == "LOCATION" or entity1.label_ == "GPE":
-            print("Location: ",entity)
+            print("Location: ",entity1)
 
 
 def recognize_person(document):
@@ -903,49 +902,7 @@ def recognize_person(document):
         print("Orgranization: ",entity_labels["ORG"])
 
 
-# file_path = "/Users/mohit/Desktop/a.txt"
-# file = open(file_path, 'r',encoding="utf-8")
-# text = file.read()
-# text1 = text.split(".")
-# text2 = list("")
-# for t in text1:
-#     t = t.replace("\n"," ")
-#     text2.append(t)
 
-# all_verb_set = get_verbs(text2)
-# shot_set = get_similar(nlp("shot"),all_verb_set)
-# kidnap_set = get_similar(nlp("kidnap"),all_verb_set)
-
-
-print("Enter Test Sentence")
-doc = nlp(input())
-dependency_tags = dict()
-entity_tags = dict()
-word_children_left = dict()
-word_children_left_count = dict()
-word_children_right = dict()
-word_children_right_count = dict()
-
-for token in doc:
-    word_children_left[token.text] = token.lefts
-    word_children_left_count[token.text] = token.n_lefts
-    word_children_right[token.text] = token.rights
-    word_children_right_count[token.text] = token.n_rights
-
-for token in doc:
-    if token.dep_ in dependency_tags.keys():
-        dependency_tags[token.dep_].add(token.text)
-    else:
-        value_set = set()
-        value_set.add(token.text)
-        dependency_tags[token.dep_] = value_set
-
-for entity in doc.ents:
-    entity_tags[entity.label_] = entity
-
-root_word = dependency_tags["ROOT"]
-root_left_child = word_children_left[list(root_word)[0]]
-root_right_child = word_children_right[list(root_word)[0]]
 
 
 

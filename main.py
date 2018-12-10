@@ -95,16 +95,33 @@ for t in text1:
 all_verb_set = get_verbs(text2)
 print("Enter test Sentence")
 doc = nlp(input())
+dependency_tags = dict()
+entity_tags = dict()
+word_children_left = dict()
+word_children_left_count = dict()
+word_children_right = dict()
+word_children_right_count = dict()
 
-#Dependency Tree
 for token in doc:
-    print(token.text, token.dep_, token.head.text, token.head.pos_,
-          [child for child in token.children])
-doc2 = nlp("Jack killed the man in the bar on Thursday at 7 PM near the beach")
+    word_children_left[token.text] = token.lefts
+    word_children_left_count[token.text] = token.n_lefts
+    word_children_right[token.text] = token.rights
+    word_children_right_count[token.text] = token.n_rights
 
-#NER tagging
-for entity in doc2.ents:
-    print(entity.text, entity.label_)
+for token in doc:
+    if token.dep_ in dependency_tags.keys():
+        dependency_tags[token.dep_].add(token.text)
+    else:
+        value_set = set()
+        value_set.add(token.text)
+        dependency_tags[token.dep_] = value_set
+
+for entity in doc.ents:
+    entity_tags[entity.label_] = entity
+
+root_word = dependency_tags["ROOT"]
+root_left_child = word_children_left[list(root_word)[0]]
+root_right_child = word_children_right[list(root_word)[0]]
 
 
 
