@@ -893,6 +893,16 @@ def crash(document):
             print("Location: ",entity)
 
 
+def recognize_person(document):
+    entity_labels = dict()
+    for entity1 in document.ents:
+        entity_labels[entity1.label_] = entity1
+    if "PERSON" in  entity_labels.keys():
+        print("Person: ",entity_labels["PERSON"])
+    if "ORG" in  entity_labels.keys():
+        print("Orgranization: ",entity_labels["ORG"])
+
+
 # file_path = "/Users/mohit/Desktop/a.txt"
 # file = open(file_path, 'r',encoding="utf-8")
 # text = file.read()
