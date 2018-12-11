@@ -206,7 +206,7 @@ crash_set.add('accident')
 #print(crash_set)
 #print()
 
-for i in range(0,7):
+for i in range(0,10):
     print("Enter test Sentence")
     input_text = input()
     doc_input = nlp(input_text)
