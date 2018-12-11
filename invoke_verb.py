@@ -36,7 +36,6 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
         subject_string = ""
         if word_child_left_count[list(root1_word)[0]] != 0:
             for token in root1_left_child:
-                print("YES")
                 if token.dep_ == "nsubj":
                     token_right_child = word_child_right[token.text]
                     token_right_count = word_child_right_count[token.text]
@@ -44,7 +43,7 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                     subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
                     subject_string = get_compound(token.lefts, "") + " " + subject_string
 
-        print("Killer: ",subject_string)
+        print("Perpetrator: ",subject_string)
         object_string = list()
         if word_child_right_count[list(root1_word)[0]] != 0 :
             for token in root1_right_child:
@@ -59,25 +58,28 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                     string = get_compound(token.lefts, "") + " " + string
                     object_string.append(string)
 
-        print(object_string)
         doc1 = nlp("victim")
         index = -1
-        max = 0
+        max11 = 0
         for i in range(0,len(object_string)):
             score = doc1.similarity(nlp(object_string[i]))
-            print(score)
-            if max<score:
-                max = score
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j+=1
+            if j!=0:
+                score = score/j
+            if max11<score:
+                max11 = score
                 index = i
         print("Victim: ",object_string[index])
-        if "DATE" in entity_tags1.keys():
-            print("Date: ", entity_tags1["DATE"])
-        elif "TIME" in entity_tags1.keys():
-            print("Time: ", entity_tags1["TIME"])
-        if "GPE" in entity_tags1.keys():
-            print("Location: ", entity_tags1["GPE"])
-        elif "LOC" in entity_tags1.keys():
-            print("Location: ", entity_tags1["LOC"])
+    if "DATE" in entity_tags1.keys():
+        print("Date: ", entity_tags1["DATE"])
+    elif "TIME" in entity_tags1.keys():
+        print("Time: ", entity_tags1["TIME"])
+    if "GPE" in entity_tags1.keys():
+        print("Location: ", entity_tags1["GPE"])
+    elif "LOC" in entity_tags1.keys():
+        print("Location: ", entity_tags1["LOC"])
 
     else:
         subject_string = ""
@@ -103,7 +105,7 @@ def bombing(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                 string = get_compound(token.lefts, "") + " " + string
                 object_string.append(string)
 
-        print(object_string)
+
         final_string = ""
         for s in object_string:
             if "by" in s:
@@ -149,13 +151,17 @@ def shoot(entity_tags1, depend_tag, word_child_left, word_child_left_count, word
                     string = get_compound(token.lefts, "") + " " + string
                     object_string.append(string)
 
-        print(object_string)
+
         doc1 = nlp("victim")
         index = -1
         max = 0
         for i in range(0,len(object_string)):
             score = doc1.similarity(nlp(object_string[i]))
-            print(score)
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
             if max<score:
                 max = score
                 index = i
@@ -193,7 +199,7 @@ def shoot(entity_tags1, depend_tag, word_child_left, word_child_left_count, word
                 string = get_compound(token.lefts,"")  + " " + string
                 object_string.append(string)
 
-        print(object_string)
+
         final_string = ""
         for s in object_string:
             if "by" in s:
@@ -217,14 +223,10 @@ def arrest(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
         subject_string = ""
         if word_child_left_count[list(root1_word)[0]] != 0:
             for token in root1_left_child:
-                print("YES")
-                print(token.text)
                 if token.dep_ == "nsubj":
-                    print(token.text)
                     token_right_child = word_child_right[token.text]
                     token_right_count = word_child_right_count[token.text]
                     subject_string = token.text
-                    print(subject_string)
                     subject_string += get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
                     subject_string = get_compound(token.lefts, "") + " " + subject_string
 
@@ -243,13 +245,17 @@ def arrest(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
                     string = get_compound(token.lefts, "") + " " + string
                     object_string.append(string)
 
-        print(object_string)
+
         doc1 = nlp("victim")
         index = -1
         max1 = 0
         for i in range(0,len(object_string)):
             score = doc1.similarity(nlp(object_string[i]))
-            print(score)
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
             if max1<score:
                 max1 = score
                 index = i
@@ -290,7 +296,7 @@ def arrest(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
                 string = get_compound(token.lefts,"")  + " " + string
                 object_string.append(string)
 
-        print(object_string)
+
         final_string = ""
         for s in object_string:
             if "by" in s:
@@ -333,13 +339,15 @@ def smuggle(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                 string = get_compound(tok.lefts, "") + " " + string
                 object_string.append(string)
 
-        print(object_string)
+        for s in object_string:
+            if "." in s:
+                object_string.remove(s)
         from_string = "NULL"
         to_string = "NULL"
         for s in object_string:
             if "from" in s:
                 from_string = s
-            if "towards" in s:
+            if "to" in  s or  "through" in s or "into" in  s  or "towards" in s:
                 to_string = s
 
         if from_string != "NULL":
@@ -354,10 +362,17 @@ def smuggle(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
         max1 = 0
         doc11 = nlp("item")
         for i in range(0, len(object_string)):
-            if max1 < doc11.similarity(nlp(object_string[i])):
-                max1 = doc11.similarity(nlp(object_string[i]))
+            score = doc11.similarity(nlp(object_string[i]))
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
+            if max1 < score:
+                max1 = score
                 index1 = i
-        print("Item: ", object_string[index1])
+        if index1 != -1:
+            print("Item: ", object_string[index1])
 
         if "CARDINAL" in entity_tags1.keys():
             print("Quantity: ",entity_tags1["CARDINAL"])
@@ -388,6 +403,10 @@ def smuggle(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                 string = get_compound(tok.lefts, "") + " " + string
                 object_string.append(string)
 
+        for s in object_string:
+            if "." in s:
+                object_string.remove(s)
+
         final_string = ""
         for s in object_string:
             if "by" in s:
@@ -396,13 +415,13 @@ def smuggle(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
             else:
                 final_string = "NULL"
         print("Perpetrator: ", final_string)
-        print(object_string)
+
         from_string = "NULL"
         to_string = "NULL"
         for s in object_string:
             if "from" in s:
                 from_string = s
-            if "towards" in s:
+            if "to" in  s or  "through" in s or "into" in  s  or "towards" in s:
                 to_string = s
 
         if from_string != "NULL":
@@ -450,15 +469,24 @@ def seizure(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                                            word_child_right_count, word_child_left, word_child_left_count)
                 string = get_compound(tok.lefts, "") + " " + string
                 object_string.append(string)
-
+        for s in object_string:
+            if "." in s:
+                object_string.remove(s)
         index1 = -1
         max1 = 0
         doc11 = nlp("item")
         for i in range(0, len(object_string)):
-            if max1 < doc11.similarity(nlp(object_string[i])):
-                max1 = doc11.similarity(nlp(object_string[i]))
+            score = doc11.similarity(object_string[i])
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
+            if max1 < score:
+                max1 = score
                 index1 = i
-        print("Item: ", object_string[index1])
+        if index1 != -1:
+            print("Item: ", object_string[index1])
 
         if "CARDINAL" in entity_tags1.keys():
             print("Quantity: ",entity_tags1["CARDINAL"])
@@ -492,7 +520,9 @@ def seizure(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                                            word_child_right_count,word_child_left,word_child_left_count)
                 string = get_compound(tok.lefts, "") + " " + string
                 object_string.append(string)
-
+        for s in object_string:
+            if "." in s:
+                object_string.remove(s)
         index1 = -1
         max1 = 0
         doc11 = nlp("authority")
@@ -531,21 +561,23 @@ def kidnap(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
                 token_right_child = word_child_right[token.text]
                 token_right_count = word_child_right_count[token.text]
                 string = token.text
-                if "obj" not in token.dep_:
+                if "obj" not in token.dep_ and token.dep_ != "punct":
                     string += " "+get_string(token_right_child,token_right_count,"",word_child_right,word_child_right_count,word_child_left,word_child_left_count)
                     string = get_compound(token.lefts, "") + " " + string
                     object_string.append(string)
                 else:
                     string = get_compound(token.lefts, "") + " " + string
                     object_string.append(string)
-
-        print(object_string)
         doc1 = nlp("victim")
         index = -1
         max = 0
         for i in range(0,len(object_string)):
             score = doc1.similarity(nlp(object_string[i]))
-            print(score)
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
             if max<score:
                 max = score
                 index = i
@@ -577,9 +609,9 @@ def kidnap(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
                 string += " " + get_string(token_right_child, token_right_count, "", word_child_right,
                                            word_child_right_count,word_child_left,word_child_left_count)
                 string = get_compound(token.lefts,"")  + " " + string
+                print(string)
                 object_string.append(string)
 
-        print(object_string)
         final_string = ""
         for s in object_string:
             if "by" in s:
@@ -620,13 +652,20 @@ def robbery(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                 else:
                     string = get_compound(token.lefts, "") + " " + string
                     object_string.append(string)
+        for s in object_string:
+            if "." in s:
+                object_string.remove(s)
 
         doc1 = nlp("target")
         index = -1
         max1 = 0
         for i in range(0,len(object_string)):
             score = doc1.similarity(nlp(object_string[i]))
-            print(score)
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
             if max1<score:
                 max1 = score
                 index = i
@@ -637,7 +676,11 @@ def robbery(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
         max2 = 0
         for i in range(0, len(object_string)):
             score = doc2.similarity(nlp(object_string[i]))
-            print(score)
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
             if max2 < score:
                 max2 = score
                 index1 = i
@@ -683,12 +726,15 @@ def robbery(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
                 final_string = "NULL"
         print("Robber/Perpetrator: ",final_string )
         object_string.remove(final_string)
+        for s in object_string:
+            if "." in s:
+                object_string.remove(s)
         doc2 = nlp("item")
         index1 = -1
         max2 = 0
         for i in range(0, len(object_string)):
             score = doc2.similarity(nlp(object_string[i]))
-            print(score)
+
             if max2 < score:
                 max2 = score
                 index1 = i
@@ -728,13 +774,17 @@ def kill(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_
                     string = get_compound(tok.lefts, "") + " " + string
                     object_string.append(string)
 
-        print(object_string)
+
         doc1 = nlp("victim")
         index = -1
         max = 0
         for i in range(0,len(object_string)):
             score = doc1.similarity(nlp(object_string[i]))
-            print(score)
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
             if max<score:
                 max = score
                 index = i
@@ -772,7 +822,7 @@ def kill(entity_tags1, depend_tag, word_child_left, word_child_left_count, word_
                 string = get_compound(tok.lefts, "") + " " + string
                 object_string.append(string)
 
-        print(object_string)
+
         final_string = ""
         for s in object_string:
             if "by" in s:
@@ -818,13 +868,17 @@ def hijack(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
                     string = get_compound(token.lefts, "") + " " + string
                     object_string.append(string)
 
-        print(object_string)
+
         doc1 = nlp("target")
         index = -1
         max1 = 0
         for i in range(0,len(object_string)):
             score = doc1.similarity(nlp(object_string[i]))
-            print(score)
+            j = 0
+            for test_token in nlp(object_string[i]):
+                j += 1
+            if j != 0:
+                score = score / j
             if max1<score:
                 max1 = score
                 index = i
@@ -862,7 +916,7 @@ def hijack(entity_tags1, depend_tag, word_child_left, word_child_left_count, wor
                 string = get_compound(token.lefts,"")  + " " + string
                 object_string.append(string)
 
-        print(object_string)
+
         final_string = ""
         for s in object_string:
             if "by" in s:
@@ -890,6 +944,11 @@ def crash(document):
     index1 = -1
     for i in range(0,len(word_set)):
         score = doc_sim.similarity(nlp(word_set[i]))
+        j = 0
+        for test_token in nlp(word_set[i]):
+            j += 1
+        if j != 0:
+            score = score / j
         if max1 < score:
             index1 = i
             max1 = score
@@ -904,9 +963,10 @@ def recognize_person(document):
     entity_labels = dict()
     for entity1 in document.ents:
         entity_labels[entity1.label_] = entity1
-    if "ORG" in  entity_labels.keys():
-        print("Orgranization: ",entity_labels["ORG"])
+    if "ORG" in entity_labels.keys():
         if "PERSON" in entity_labels.keys():
+            print("Person Recognition")
+            print("Orgranization: ", entity_labels["ORG"])
             print("Person: ", entity_labels["PERSON"])
 
 
