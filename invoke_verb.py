@@ -347,7 +347,7 @@ def smuggle(entity_tags1, depend_tag, word_child_left, word_child_left_count, wo
         for s in object_string:
             if "from" in s:
                 from_string = s
-            if "to" in  s or  "through" in s or "into" in  s  or "towards" in s:
+            if "to" in s or "through" in s or "into" in s or "towards" in s:
                 to_string = s
 
         if from_string != "NULL":
@@ -964,9 +964,10 @@ def recognize_person(document):
     for entity1 in document.ents:
         entity_labels[entity1.label_] = entity1
     if "ORG" in entity_labels.keys():
+        print("Person Recognition")
+        print("Orgranization: ", entity_labels["ORG"])
         if "PERSON" in entity_labels.keys():
-            print("Person Recognition")
-            print("Orgranization: ", entity_labels["ORG"])
+
             print("Person: ", entity_labels["PERSON"])
 
 
