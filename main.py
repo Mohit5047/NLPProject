@@ -206,87 +206,92 @@ crash_set.add('accident')
 #print(crash_set)
 #print()
 
-print("Enter test Sentence")
-input_text = input()
-doc_input = nlp(input_text)
-task_three(doc_input)
-input_verb = set()
+for i in range(0,7):
+    print("Enter test Sentence")
+    input_text = input()
+    doc_input = nlp(input_text)
+    print("Do you wish to see Task 3?")
+    toggle_task_three = input()
+    if toggle_task_three == "Y":
+        task_three(doc_input)
 
-for tok in doc_input:
-    if tok.tag_ == "VB" or tok.tag_ == "VBD" or tok.tag_ == "VBG" or tok.tag_ == "VBN" or tok.tag_ == "VBP" or tok.tag_ == "VBZ" or tok.tag_ == "NN" or tok.tag_ == "NNS":
-        if tok not in input_verb:
-            input_verb.add(tok.text)
+    input_verb = set()
 
-input_verb = remove_duplicates(input_verb)
-input_verb = wordnet_lemma(input_verb)
+    for tok in doc_input:
+        if tok.tag_ == "VB" or tok.tag_ == "VBD" or tok.tag_ == "VBG" or tok.tag_ == "VBN" or tok.tag_ == "VBP" or tok.tag_ == "VBZ" or tok.tag_ == "NN" or tok.tag_ == "NNS":
+            if tok not in input_verb:
+                input_verb.add(tok.text)
 
-for verb in input_verb:
+    input_verb = remove_duplicates(input_verb)
+    input_verb = wordnet_lemma(input_verb)
 
-    if verb.lower() in bombing_set or verb.upper() in bombing_set:
-        print("Bombing")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.bombing(entity_tags, dependency_tags, word_children_left, word_children_left_count,
-                            word_children_right, word_children_right_count, root_word, root_left_child,
-                            root_right_child)
+    for verb in input_verb:
 
-    if verb.lower() in shoot_set or verb.upper() in shoot_set:
-        print("Shoot")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.shoot(entity_tags, dependency_tags, word_children_left,
-                          word_children_left_count, word_children_right, word_children_right_count, root_word,
-                          root_left_child, root_right_child)
-    if verb.lower() in arrest_set or verb.upper() in arrest_set:
-        print("Arrest")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.arrest(entity_tags, dependency_tags, word_children_left,
-                           word_children_left_count, word_children_right, word_children_right_count, root_word,
-                           root_left_child, root_right_child)
-    if verb.lower() in smuggle_set or verb.upper() in smuggle_set:
-        print("Smuggle")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.smuggle(entity_tags, dependency_tags, word_children_left, word_children_left_count,
-                            word_children_right, word_children_right_count, root_word, root_left_child,
-                            root_right_child)
-    if verb.lower() in seizure_set or verb.upper() in seizure_set:
-        print("Seizure")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.seizure(entity_tags, dependency_tags, word_children_left, word_children_left_count,
-                            word_children_right, word_children_right_count, root_word, root_left_child,
-                            root_right_child)
-    if verb.lower() in kidnap_set or verb.upper() in kidnap_set:
-        print("Kidnap")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.kidnap(entity_tags, dependency_tags, word_children_left,
-                           word_children_left_count, word_children_right, word_children_right_count, root_word,
-                           root_left_child, root_right_child)
-    if verb.lower() in robbery_set or verb.upper() in robbery_set:
-        print("Robbery")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.robbery(entity_tags, dependency_tags, word_children_left,
-                            word_children_left_count, word_children_right, word_children_right_count, root_word,
-                            root_left_child, root_right_child)
-    if verb.lower() in kill_set or verb.upper() in kill_set:
-        print("Kill")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.kill(entity_tags, dependency_tags, word_children_left,
-                         word_children_left_count, word_children_right, word_children_right_count, root_word,
-                         root_left_child, root_right_child)
-    if verb.lower() in hijack_set or verb.upper() in hijack_set:
-        print("Hijack")
-        entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
-            doc_input)
-        invoke_verb.hijack(entity_tags, dependency_tags, word_children_left,
-                           word_children_left_count, word_children_right, word_children_right_count, root_word,
-                           root_left_child, root_right_child)
-    if verb.lower() in crash_set or verb.upper() in crash_set:
-        print("Crash")
-        invoke_verb.crash(doc_input)
-invoke_verb.recognize_person(doc_input)
+        if verb.lower() in bombing_set or verb.upper() in bombing_set:
+            print("Bombing")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.bombing(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                                word_children_right, word_children_right_count, root_word, root_left_child,
+                                root_right_child)
+
+        if verb.lower() in shoot_set or verb.upper() in shoot_set:
+            print("Shoot")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.shoot(entity_tags, dependency_tags, word_children_left,
+                              word_children_left_count, word_children_right, word_children_right_count, root_word,
+                              root_left_child, root_right_child)
+        if verb.lower() in arrest_set or verb.upper() in arrest_set:
+            print("Arrest")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.arrest(entity_tags, dependency_tags, word_children_left,
+                               word_children_left_count, word_children_right, word_children_right_count, root_word,
+                               root_left_child, root_right_child)
+        if verb.lower() in smuggle_set or verb.upper() in smuggle_set:
+            print("Smuggle")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.smuggle(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                                word_children_right, word_children_right_count, root_word, root_left_child,
+                                root_right_child)
+        if verb.lower() in seizure_set or verb.upper() in seizure_set:
+            print("Seizure")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.seizure(entity_tags, dependency_tags, word_children_left, word_children_left_count,
+                                word_children_right, word_children_right_count, root_word, root_left_child,
+                                root_right_child)
+        if verb.lower() in kidnap_set or verb.upper() in kidnap_set:
+            print("Kidnap")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.kidnap(entity_tags, dependency_tags, word_children_left,
+                               word_children_left_count, word_children_right, word_children_right_count, root_word,
+                               root_left_child, root_right_child)
+        if verb.lower() in robbery_set or verb.upper() in robbery_set:
+            print("Robbery")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.robbery(entity_tags, dependency_tags, word_children_left,
+                                word_children_left_count, word_children_right, word_children_right_count, root_word,
+                                root_left_child, root_right_child)
+        if verb.lower() in kill_set or verb.upper() in kill_set:
+            print("Kill")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.kill(entity_tags, dependency_tags, word_children_left,
+                             word_children_left_count, word_children_right, word_children_right_count, root_word,
+                             root_left_child, root_right_child)
+        if verb.lower() in hijack_set or verb.upper() in hijack_set:
+            print("Hijack")
+            entity_tags, dependency_tags, word_children_left, word_children_left_count, word_children_right, word_children_right_count, root_word, root_left_child, root_right_child = get_new_data(
+                doc_input)
+            invoke_verb.hijack(entity_tags, dependency_tags, word_children_left,
+                               word_children_left_count, word_children_right, word_children_right_count, root_word,
+                               root_left_child, root_right_child)
+        if verb.lower() in crash_set or verb.upper() in crash_set:
+            print("Crash")
+            invoke_verb.crash(doc_input)
+    invoke_verb.recognize_person(doc_input)
